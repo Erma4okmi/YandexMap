@@ -33,13 +33,15 @@ class _HomeState extends State<Home> {
 
   // Пользовательские дефолтные координаты.
   LatLong userPosition = const LatLong(lat: 0, long: 0);
-  LatLong endPosition = const LatLong(lat: 0, long: 0);
+  Point endPosition = Point(latitude: 65.52697, longitude: 72.54638);
 
   @override
   void initState() {
     super.initState();
     Timer(const Duration(seconds: 1), () {
       _initPermission().ignore();
+      addMarker(endPosition);
+      requestRoutes(userPosition, endPosition);
     });
   }
 
@@ -52,9 +54,6 @@ class _HomeState extends State<Home> {
             children: <Widget>[
 
               YandexMap(
-                onMapTap: (Point point) {
-                  addMarker(point);
-                },
                 onMapCreated: (controller) async {
                   _controller = controller;
                   mapControllerCompleter.complete(controller);
@@ -208,18 +207,22 @@ class _HomeState extends State<Home> {
       opacity: 1.0,
     );
 
-    endPosition = LatLong(
-      lat: point.latitude,
-      long: point.longitude,
+    endPosition = Point(
+      latitude: point.latitude,
+      longitude: point.longitude,
     );
 
     setState(() {
       mapObjects.add(markpic);
     });
+
+    Timer(Duration(seconds: 3), () {
+      buildRoad();
+    });
   }
 
   /// Метод прокладки маршрута.
-  requestRoutes(LatLong startPoint, LatLong endPoint) async {
+  requestRoutes(LatLong startPoint, endPoint) async {
     List<RequestPoint> listRequestPoints = [
       RequestPoint(
         point: Point(
@@ -230,8 +233,8 @@ class _HomeState extends State<Home> {
       ),
       RequestPoint(
         point: Point(
-          latitude: endPoint.lat,
-          longitude: endPoint.long,
+          latitude: endPoint.latitude,
+          longitude: endPoint.longitude,
         ),
         requestPointType: RequestPointType.wayPoint,
       ),
