@@ -1,6 +1,6 @@
 # testapp
 
-A new Flutter project.
+Работа с Yandex map kit
 
 ## Getting Started
 
